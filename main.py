@@ -1,6 +1,33 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
-import os
+from pathlib import Path
+
+# Optional: set this to your actual MUSIC folder on the PSP card if auto-detect fails
+# Example: r"E:\PSP\MUSIC"
+MANUAL_MUSIC_ROOT = None  # or set a path string as above
+
+def to_psp_relpath(full_path: str) -> str:
+    """Return PSP-style path like \MUSIC\sub\folder\file.mp3"""
+    p = Path(full_path)
+
+    # Try to find the 'MUSIC' segment in the path (case-insensitive)
+    parts_lower = [part.lower() for part in p.parts]
+    for i, seg in enumerate(parts_lower):
+        if seg == "music":
+            rel_parts = p.parts[i:]  # keep from MUSIC onward
+            return "\\" + "\\".join(rel_parts)
+
+    # If not found, try manual base
+    if MANUAL_MUSIC_ROOT:
+        try:
+            base = Path(MANUAL_MUSIC_ROOT).resolve()
+            rel = p.resolve().relative_to(base)
+            return "\\MUSIC\\" + str(rel).replace("/", "\\")
+        except Exception:
+            pass
+
+    # Fallback: just drop under \MUSIC\
+    return "\\MUSIC\\" + p.name
 
 
 def add_files():
@@ -50,22 +77,15 @@ def save_playlist():
         return
 
     save_path = filedialog.asksaveasfilename(
-        defaultextension=".m3u8",   # now defaults to m3u8
+        defaultextension=".m3u8",
         filetypes=[("M3U8 Playlist", "*.m3u8"), ("All files", "*.*")]
     )
 
     if save_path:
-        with open(save_path, "w", encoding="utf-8") as playlist:
+        with open(save_path, "w", encoding="utf-8", newline="\n") as playlist:
             for i in range(file_list.size()):
                 full_path = file_list.get(i)
-
-                # Try to find the "\MUSIC\" part in the path
-                try:
-                    rel_index = full_path.upper().rindex("\\MUSIC\\")
-                    rel_path = full_path[rel_index:]  # keep everything after \MUSIC\
-                except ValueError:
-                    rel_path = "\\MUSIC\\" + os.path.basename(full_path)
-
+                rel_path = to_psp_relpath(full_path)
                 playlist.write(rel_path + "\n")
 
         messagebox.showinfo("Done", f"Playlist saved as:\n{save_path}")
@@ -74,7 +94,7 @@ def save_playlist():
 # GUI Setup
 root = tk.Tk()
 root.title("PSP Playlist Creator")
-root.geometry("550x480")
+root.geometry("560x500")
 
 frame = tk.Frame(root)
 frame.pack(pady=10)
@@ -85,7 +105,7 @@ add_button.grid(row=0, column=0, padx=5)
 save_button = tk.Button(frame, text="Save Playlist", command=save_playlist)
 save_button.grid(row=0, column=1, padx=5)
 
-file_list = tk.Listbox(root, width=70, height=15, selectmode=tk.SINGLE)
+file_list = tk.Listbox(root, width=72, height=16, selectmode=tk.SINGLE)
 file_list.pack(pady=10)
 
 # Controls for reordering
