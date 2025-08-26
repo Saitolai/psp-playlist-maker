@@ -18,7 +18,3 @@ What's new in v2:
 -------------------------------------------------------------------
 extra modules to install:
 pip install tkinterdnd2
-
-Things to add/improve on:
-- Drag and drop for ease of adding songs.
-- Load playlist and can edit further to save a new playlist.
