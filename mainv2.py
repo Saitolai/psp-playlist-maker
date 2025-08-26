@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from pathlib import Path
+from tkinterdnd2 import DND_FILES, TkinterDnD
 
 # Optional: set this to your actual MUSIC folder on the PSP card if auto-detect fails
 # Example: r"E:\PSP\MUSIC"
@@ -109,8 +110,22 @@ def load_playlist():
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load playlist:\n{e}")
 
+def handle_drop(event):
+    try:
+        # event.data contains the file paths
+        files = root.tk.splitlist(event.data)
+        for path in files:
+            # Check if it's a file and not a directory
+            if Path(path).is_file():
+                file_list.insert(tk.END, path)
+                # print(f"Added file: {path}")
+            else:
+                print(f"Skipped non-file path: {path}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
 # GUI Setup
-root = tk.Tk()
+root = TkinterDnD.Tk()
 root.title("PSP Playlist Creator")
 root.geometry("560x500")
 
@@ -128,6 +143,10 @@ load_button.grid(row=0, column=2, padx=5)
 
 file_list = tk.Listbox(root, width=72, height=16, selectmode=tk.SINGLE)
 file_list.pack(pady=10)
+
+# Make the listbox a drop target for files
+file_list.drop_target_register(DND_FILES)
+file_list.dnd_bind('<<Drop>>', handle_drop)
 
 # Controls for reordering
 control_frame = tk.Frame(root)
