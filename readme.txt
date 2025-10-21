@@ -1,4 +1,4 @@
-SPOTIFY PLAYLIST EXTRACTOR
+PSP Playlist Maker
 
 To run the code, just use python command "py main.py" to run the python script.
 *"py mainv2.py" if you want to use the newer version.
