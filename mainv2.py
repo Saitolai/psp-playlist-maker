@@ -126,7 +126,7 @@ def handle_drop(event):
 
 # GUI Setup
 root = TkinterDnD.Tk()
-root.title("PSP Playlist Creator")
+root.title("PSP Playlist Maker")
 root.geometry("560x500")
 
 frame = tk.Frame(root)
