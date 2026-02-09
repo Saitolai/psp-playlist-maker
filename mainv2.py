@@ -157,8 +157,9 @@ def show_about():
     messagebox.showinfo(
         "About PSP Playlist Maker",
         "PSP Playlist Maker V2.0.0\n\n"
+        "For SONY PSP music playlists.\n\n"
         "Created by Saitolai\n\n"
-        "For SONY PSP music playlists."
+        "Icon designed by Tina"
     )
 
 def open_url():
