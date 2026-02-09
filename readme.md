@@ -16,6 +16,9 @@ For playlists to work on your PSP, you **must** follow the official Sony PlaySta
 2. **Playlist Files:** This application should save your generated playlists to:  
    `[Memory Stick]:\PSP\PLAYLIST\MUSIC\`
 
+Do ensure that your PSP firmware is up to date in order to be able to use the playlist features.
+
+(information regarding to early supported firmware version with playlist is reported around [6.10](https://www.psdevwiki.com/psp/Official_Firmware_(OFW)#6.10))
 > **Note:** If the `PLAYLIST` or `MUSIC` subfolders do not exist under the `PSP` directory, you must create them manually.
 
 ## 🛠 Getting Started
