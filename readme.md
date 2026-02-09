@@ -27,12 +27,13 @@ py main.py
 ```
 * Feel free to try out "py mainv2.py" if you want to use the newer version.
 * A GUI will appear, and you start selecting songs with the file picker.
-* Once all changes is done, hit save, and name the playlist, and done!
+* Once all changes is done, hit save, name the playlist, and done!
 
 NOTE:
-* Playlists are saved to \PSP\PLAYLIST\MUSIC\ folder in order fopr the playlist to show up on the PSP.
+* Playlists are saved to \PSP\PLAYLIST\MUSIC\ folder in order for the playlist to show up on the PSP.
 * Be sure to add songs within the \MUSIC\ folder directory of the PSP for it to work!
 
 ## Version History
 * v2
     * Drag and drop option now available! Just drop your music file to the GUI window, and it will add the song in the playlist!
+    * Added dropdown menu for general functions (add songs, save playlist, load paylist), as well as about, and link to Github repo.
