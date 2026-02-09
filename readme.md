@@ -18,7 +18,7 @@ For playlists to work on your PSP, you **must** follow the official Sony PlaySta
 
 > **Note:** If the `PLAYLIST` or `MUSIC` subfolders do not exist under the `PSP` directory, you must create them manually.
 
-## Getting Started
+## 🛠 Getting Started
 
 ### Dependencies
 * **Python 3.x**
@@ -41,7 +41,7 @@ py mainv2.py
 * A GUI will appear, and you start selecting songs with the file picker.
 * Once all changes is done, hit save, name your playlist (e.g., RockMix), and ensure the destination is the \PSP\PLAYLIST\MUSIC\ folder mentioned above.
 
-## Version History
+## 📜 Version History
 * v2
     * Added Drag & Drop support.
     * New dropdown menu for file operations (Add Songs, Save Playlist, Load Playlist).
@@ -49,7 +49,7 @@ py mainv2.py
 * v1
     * Initial release with basic GUI and manual file selection.
 
-## Credits
+## ❤️ Credits & Attribution
 
 * **Icon Design:** [Tina](https://www.artstation.com/tinayong96) – Created the application icon.
 * **Libraries:** [tkinterdnd2](https://github.com/Eliav2/tkinterdnd2) for drag-and-drop support.
