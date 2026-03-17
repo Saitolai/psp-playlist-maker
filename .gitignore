@@ -1,2 +1,16 @@
+# PyInstaller folders
 /build
 /dist
+
+# Python Virtual Environments
+.venv/
+venv/
+ENV/
+
+# Python bytecode/cache
+__pyacahe__/
+*.py[cod]
+
+# OS specific files
+.DS_Store
+Thumbs.db
