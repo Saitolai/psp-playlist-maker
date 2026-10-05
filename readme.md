@@ -75,6 +75,12 @@ python3 mainv2-linux-mint.py
     * New dropdown menu for file operations (Add Songs, Save Playlist, Load Playlist).
     * Integrated "About" section and direct GitHub links.
     * Fixed issue on Linux Mint regarding to how the playlist file directory is saved.
+    * Added Drag & Drop support (Optimized for Windows), now including folder drag & drop.
+    * Dragging and dropping of files now automatically filters for supported audio formats.
+    * Playlist selection mode set to 'EXTENDED', can select multiple listings at once to move at the same time (`Ctrl + Click` and `Shift + Click`).
+    * Playlist box can be expanded dynamically for better viewing when resizing.
+    * The playlist view now automatically scrolls to follow selected tracks when moving them up or down past the visible area.
+    * Miscellanous bug fixes relating to re-saving loaded playlist, multi-select Move Up/Down, fixed process hang on exit.
 * v1
     * Initial release with basic GUI and manual file selection.
 
