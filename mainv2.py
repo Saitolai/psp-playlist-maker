@@ -12,6 +12,8 @@ import os
 # Example: r"E:\PSP\MUSIC"
 MANUAL_MUSIC_ROOT = None  # or set a path string as above
 
+SUPPORTED_EXTENSIONS = {".mp3", ".wav", ".flac", ".aac", ".at3", ".oma", ".wma", ".m4a"}
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -23,7 +25,14 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 def to_psp_relpath(full_path: str) -> str:
-    """Return PSP-style path like \MUSIC\sub\folder\file.mp3"""
+    r"""Return PSP-style path like \MUSIC\sub\folder\file.mp3"""
+
+    # --- NEW FIX: Skip processing if it is already a PSP path ---
+    normalized = full_path.strip().replace("/", "\\")
+    if normalized.upper().startswith(r"\MUSIC"):
+        return normalized
+    # ------------------------------------------------------------
+
     p = Path(full_path)
 
     # Try to find the 'MUSIC' segment in the path (case-insensitive)
@@ -49,7 +58,7 @@ def to_psp_relpath(full_path: str) -> str:
 def add_files():
     files = filedialog.askopenfilenames(
         title="Select music files",
-        filetypes=[("Audio files", "*.mp3 *.wav *.flac *.aac"), ("All files", "*.*")]
+        filetypes=[("Audio files", "*.mp3 *.wav *.flac *.aac *.at3 *.oma *.wma *.m4a"), ("All files", "*.*")]
     )
     for f in files:
         file_list.insert(tk.END, f)
@@ -64,7 +73,7 @@ def remove_selected():
         return
 
     # Validation 2: Ask for confirmation
-    if messagebox.askyesno("Confirm Remove", "Are you sure you want to remove the selected file from the list?"):
+    if messagebox.askyesno("Confirm Remove", "Are you sure you want to remove the selected file(s) from the list?"):
         for i in reversed(selected):
             file_list.delete(i)
 
@@ -81,24 +90,45 @@ def clear_all():
 
 def move_up():
     selected = file_list.curselection()
+    if not selected:
+        return
+
+    selected_set = set(selected)
     for i in selected:
-        if i == 0:
+        # Don't move if at the very top OR if the item above is also selected and couldn't move
+        if i == 0 or (i - 1) in selected_set:
             continue
         text = file_list.get(i)
         file_list.delete(i)
         file_list.insert(i - 1, text)
         file_list.selection_set(i - 1)
+        file_list.activate(i - 1)
+        selected_set.remove(i)
+        selected_set.add(i - 1)
+
+    file_list.see(min(selected_set))
 
 
 def move_down():
     selected = file_list.curselection()
+    if not selected:
+        return
+
+    selected_set = set(selected)
+    last_index = file_list.size() - 1
     for i in reversed(selected):
-        if i == file_list.size() - 1:
+        # Don't move if at the very bottom OR if the item below is also selected and couldn't move
+        if i == last_index or (i + 1) in selected_set:
             continue
         text = file_list.get(i)
         file_list.delete(i)
         file_list.insert(i + 1, text)
         file_list.selection_set(i + 1)
+        file_list.activate(i + 1)
+        selected_set.remove(i)
+        selected_set.add(i + 1)
+
+    file_list.see(max(selected_set))
 
 
 def save_playlist():
@@ -144,12 +174,17 @@ def handle_drop(event):
         # event.data contains the file paths
         files = root.tk.splitlist(event.data)
         for path in files:
-            # Check if it's a file and not a directory
-            if Path(path).is_file():
-                file_list.insert(tk.END, path)
+            p = Path(path)
+            # Check if it's a directory or a file
+            if p.is_dir():
+                for subfile in sorted(p.rglob("*")):
+                    if subfile.is_file() and subfile.suffix.lower() in SUPPORTED_EXTENSIONS:
+                        file_list.insert(tk.END, str(subfile))
+            elif p.is_file() and p.suffix.lower() in SUPPORTED_EXTENSIONS:
+                file_list.insert(tk.END, str(p))
                 # print(f"Added file: {path}")
             else:
-                print(f"Skipped non-file path: {path}")
+                print(f"Skipped non-audio or invalid path: {path}")
     except Exception as e:
         print(f"An error occurred: {e}")
 
@@ -169,7 +204,7 @@ def open_url():
 
 def exit_app():
     if messagebox.askyesno("Exit", "Are you sure you want to exit?"):
-        root.quit()
+        root.destroy()
 
 # GUI Setup
 root = TkinterDnD.Tk()
@@ -211,19 +246,19 @@ header_text.pack(pady=(0, 0))
 instruction_label.pack(pady=(5, 0))
 
 list_frame = tk.Frame(root)
-list_frame.pack(pady=5)
+list_frame.pack(pady=5, fill=tk.BOTH, expand=True, padx=15)
 scrollbar = tk.Scrollbar(list_frame, orient=tk.VERTICAL)
 
 file_list = tk.Listbox(
     list_frame,
     width=70,
     height=20,
-    selectmode=tk.SINGLE,
+    selectmode=tk.EXTENDED,
     yscrollcommand=scrollbar.set
 )
 
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-file_list.pack(side=tk.LEFT, fill=tk.BOTH)
+file_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
 scrollbar.config(command=file_list.yview)
 
