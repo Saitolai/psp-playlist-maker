@@ -191,7 +191,7 @@ def handle_drop(event):
 def show_about():
     messagebox.showinfo(
         "About PSP Playlist Maker",
-        "PSP Playlist Maker V2.0.0\n\n"
+        "PSP Playlist Maker V2.1.0\n\n"
         "For SONY PSP music playlists.\n\n"
         "Created by Saitolai\n\n"
         "Icon designed by Tina"
